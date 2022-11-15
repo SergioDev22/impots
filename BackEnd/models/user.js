@@ -12,4 +12,20 @@ module.exports = {
       });
     });
   },
+
+  login: (username) => {
+    return new Promise((resolve, reject) => {
+      db.query(
+        "SELECT * FROM Utilisateur WHERE username = ?",
+        username,
+        (err, results) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(results);
+          }
+        }
+      );
+    });
+  },
 };

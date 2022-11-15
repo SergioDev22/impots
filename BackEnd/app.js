@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 const userRoutes = require("./routes/user");
@@ -20,5 +21,6 @@ app.use((req, res, next) => {
 
 app.use(bodyParser.json());
 app.use("/api/user", userRoutes);
+app.use("/pdc", express.static(path.join(__dirname, "pdc")));
 
 module.exports = app;

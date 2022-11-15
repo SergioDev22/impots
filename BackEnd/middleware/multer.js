@@ -7,7 +7,7 @@ const MIME_TYPES = {
 
 const storage = multer.diskStorage({
   // Preciser la destination des fichiers images enregistrés
-  // ici dans le dossier images
+  // ici dans le dossier pdc
   destination: (req, file, callback) => {
     callback(null, "pdc");
   },
