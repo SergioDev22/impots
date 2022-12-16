@@ -18,8 +18,13 @@
 - #### Etape 4 :
 
   Creer votre propre fichier `.env` à partir du fichier `.env.template` pour la configuration des variables d'environnement nécessaires
-
+  
 - #### Etape 5 :
+  Pour que l'application fonctionne normale, il faut créer deux dossier `pdc` et `facture`
+  sur la racine du projet pour que les échanges des fichiers sont pris en charge.
+  ces dossiers sont mis en `.gitignore` pendant la phase du dévéloppement à cause de sa lourde volume
+
+- #### Etape 6 :
   Il est le temps de demmarer notre application à l'aide du commande `nodemon server.js`
 
 ## DOCUMENTATIONS
