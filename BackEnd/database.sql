@@ -6,7 +6,7 @@
 
 -- SE du serveur:                Win64
 
--- HeidiSQL Version:             12.0.0.6468
+-- HeidiSQL Version:             12.2.0.6576
 
 -- --------------------------------------------------------
 
@@ -66,7 +66,7 @@ CREATE TABLE
         `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
         `type` enum('SUPER', 'SIMPLE') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'SIMPLE',
         PRIMARY KEY (`id`)
-    ) ENGINE = InnoDB AUTO_INCREMENT = 2 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
 
@@ -77,13 +77,13 @@ DROP TABLE IF EXISTS `habilitation`;
 CREATE TABLE
     IF NOT EXISTS `habilitation` (
         `id` int NOT NULL AUTO_INCREMENT,
-        `date_ajout` datetime NOT NULL,
+        `date_ajout` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
         `contenu` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
         `id_Utilisateur` int NOT NULL,
         PRIMARY KEY (`id`),
         KEY `Habilitation_Utilisateur_FK` (`id_Utilisateur`),
         CONSTRAINT `Habilitation_Utilisateur_FK` FOREIGN KEY (`id_Utilisateur`) REFERENCES `utilisateur` (`id`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+    ) ENGINE = InnoDB AUTO_INCREMENT = 2 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
 
@@ -94,7 +94,7 @@ DROP TABLE IF EXISTS `impot`;
 CREATE TABLE
     IF NOT EXISTS `impot` (
         `id` int NOT NULL AUTO_INCREMENT,
-        `date_ajout` datetime NOT NULL,
+        `date_ajout` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
         `facture` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
         `mois` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
         `annee` year NOT NULL,
@@ -102,7 +102,7 @@ CREATE TABLE
         PRIMARY KEY (`id`),
         KEY `Impot_Utilisateur_FK` (`id_Utilisateur`),
         CONSTRAINT `Impot_Utilisateur_FK` FOREIGN KEY (`id_Utilisateur`) REFERENCES `utilisateur` (`id`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+    ) ENGINE = InnoDB AUTO_INCREMENT = 3 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
 
@@ -113,7 +113,7 @@ DROP TABLE IF EXISTS `teledeclaration`;
 CREATE TABLE
     IF NOT EXISTS `teledeclaration` (
         `id` int NOT NULL AUTO_INCREMENT,
-        `date_ajout` datetime NOT NULL,
+        `date_ajout` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
         `contenu` varchar(1000) COLLATE utf8mb4_general_ci NOT NULL,
         `id_Utilisateur` int NOT NULL,
         PRIMARY KEY (`id`),
@@ -139,8 +139,9 @@ CREATE TABLE
         `phone` varchar(15) COLLATE utf8mb4_general_ci NOT NULL,
         `pdcUrl` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
         `password` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-        PRIMARY KEY (`id`)
-    ) ENGINE = InnoDB AUTO_INCREMENT = 7 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `username` (`username`)
+    ) ENGINE = InnoDB AUTO_INCREMENT = 8 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
 
