@@ -24,9 +24,7 @@
 
 ## DOCUMENTATIONS
 
-- ### Utilisateurs
-
-#### Registration et login
+- ### Utilisateur
 
 <details>
 <summary>Inscription ou Registration</summary>
@@ -96,7 +94,7 @@
 <summary>Connexion ou login </summary>
 
 - <details>
-  <summary>Request</summary>
+      <summary>Request</summary>
 
   ```http
   POST <host>:<port>/api/user/login
@@ -109,7 +107,7 @@
   </details>
 
 - <details>
-    <summary>Response (200)</summary>
+      <summary>Response (200)</summary>
 
   ```json
     {
@@ -126,6 +124,145 @@
             "token": <token>
         }
     }
+  ```
+
+    </details>
+
+    </details>
+
+<details>
+  <summary>Modifier l'Utilisateur </summary>
+
+- <details>
+  <summary>Request</summary>
+
+  **NB** : Pour la modification ici, on peut modifier tout les champs en même temps ou ce que vous voulez modifier selon le demande de l'utilisateur. Mais par contre si vous allez modifier le pdc de l'utilsateur, les données à envoyer est alors en forme `multipart/form-data` avec le nom du champ du photo `pdc`. Le `mot de passe` et l'`username` ne sont pas pris en charge ici pour la raison de sa sécurité spécifique .
+
+  ```http
+  PATCH <host>:<port>/api/user/update
+  authorization : Bearer Token
+
+  formdata(
+    "nom": string ,
+    "prenom": string ,
+    "cin": string,
+    "adresse": string ,
+    phone : string
+    "pdc": file ,
+  )
+  ```
+
+  Sinon, Envoyer tout simplement les données en `json`
+
+  ```http
+  PATCH <host>:<port>/api/user/update
+  authorization : Bearer Token
+
+  {
+    "nom": string ,
+    "prenom": string,
+    "cin": string,
+    "adresse": string ,
+    "password": string,
+    "phone" : string
+  }
+  ```
+
+  </details>
+
+- <details>
+    <summary>Response (200)</summary>
+
+  ```json
+  {
+    "message": "User <userId> updated successfully!"
+  }
+  ```
+
+    </details>
+
+  </details>
+
+  - ### Impots
+
+<details>
+<summary>Payer un impot </summary>
+
+- <details>
+  <summary>Request</summary>
+
+  **NB** : Pour prendre en compte le facture de l'utilsateur,
+  Il faut envoyer les données en `multipart/form-data`
+  avec le champ de la photo de facture nommé "facture"
+
+  ```http
+  POST <host>:<port>/api/impot/
+  authorization : Bearer token
+
+  formdata(
+    "mois": string | required, (janvier, février, ...)
+    "annee": year | required (2022, 2023, ...)
+    "facture": file | required,
+  )
+  ```
+
+  </details>
+
+- <details>
+    <summary>Response (200)</summary>
+
+  ```json
+  {
+    "message": "Impot created successfully!",
+    "data": {
+      "id": 2,
+      "mois": "janvier",
+      "annee": "2022",
+      "facture": "http://127.0.0.1:3000/facture/facture__astuce.png1671159557189.png"
+    }
+  }
+  ```
+
+    </details>
+
+  </details>
+
+<details>
+<summary>Historique par Utilusateur </summary>
+
+- <details>
+  <summary>Request</summary>
+
+  ```http
+  GET <host>:<port>/api/impot/history
+  authorization : Bearer token
+  ```
+
+  </details>
+
+- <details>
+    <summary>Response (200)</summary>
+
+  ```json
+  {
+    "message": "Impot history successfully!",
+    "data": [
+      {
+        "id": 1,
+        "date_ajout": "2022-12-16T02:42:03.000Z",
+        "mois": "décembre",
+        "annee": 2022,
+        "facture": "http://127.0.0.1:3000/facture/facture__astuce.png1671158523867.png"
+      },
+      {
+        "id": 2,
+        "date_ajout": "2022-12-16T02:59:17.000Z",
+        "mois": "janvier",
+        "annee": 2022,
+        "facture": "http://127.0.0.1:3000/facture/facture__astuce.png1671159557189.png"
+      }
+    ]
+  }
   ```
 
     </details>

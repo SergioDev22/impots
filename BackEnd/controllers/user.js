@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const userModel = require("../models/user");
 const generateToken = require("../services/generateToken");
 
@@ -50,6 +51,25 @@ module.exports = {
       }
     }
 
+    // Vérifier si l'utilisateur existe déjà dans la base de données
+    userModel
+      .verifExistUsername(body.username)
+      .then((result) => {
+        if (result.length > 0) {
+          res.status(400).send({
+            message: `Username "${body.username}" already exists! please choose another one!`,
+          });
+          return false;
+        }
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message: "Some error occurred while checking username.",
+          error: err.message,
+        });
+        return false;
+      });
+
     // Hasher le mot de passe avant de l'enregistrer dans la base de données
     bcrypt.hash(body.password, 10, (err, hash) => {
       if (err) {
@@ -94,7 +114,7 @@ module.exports = {
                     : null,
                 token: generateToken({
                   userId: result.insertId,
-                  userNumber: body.phone,
+                  username: body.username,
                 }),
               },
             });
@@ -166,7 +186,7 @@ module.exports = {
                   pdcUrl: result[0].pdcUrl,
                   token: generateToken({
                     userId: result[0].id,
-                    userNumber: result[0].phone,
+                    username: result[0].username,
                   }),
                 },
               });
@@ -188,5 +208,71 @@ module.exports = {
           error: err.message,
         });
       });
+  },
+
+  // à continuer
+  update: (req, res) => {
+    const pdc = req.file;
+    const body = req.body;
+    console.log(Object.keys(body));
+    const id = jwt.verify(
+      req.headers.authorization.split(" ")[1],
+      process.env.JWT_SIGN_SECRET
+    ).userId;
+
+    // Verifier tout d'abort que le body n'est pas vide
+    // c-a-d l'user fait une modification des contenus de body
+    if (Object.keys(body).length != 0) {
+      // les champs à autoriser dans le body
+      const fieldExists = ["nom", "prenom", "cin", "phone", "adresse"];
+
+      // Anticiper des autres champs pour éviter les erreurs
+      for (fielOfBody in Object.keys(body).values()) {
+        if (!fieldExists.includes(fielOfBody)) {
+          return res.status(400).send({
+            message: `Content "${[fielOfBody]}" is not allowed!`,
+          });
+        }
+      }
+    } else {
+      // Verifier l'existance de la photo alors pour
+      // la modification car ici, il n'y a pas des body
+      // donc surement update du photo seulement
+      if (pdc === undefined) {
+        return res.status(400).send({
+          message:
+            "Content can not be empty! You must update at least one field",
+        });
+      }
+    }
+
+    // Construire les data à update
+    const data =
+      pdc !== undefined && Object.keys(body).length != 0
+        ? {
+            ...body,
+            pdcUrl: `${req.protocol}://${req.get("host")}/pdc/${
+              req.file.filename
+            }`,
+          }
+        : pdc !== undefined && Object.keys(body).length === 0
+        ? {
+            pdcUrl: `${req.protocol}://${req.get("host")}/pdc/${
+              req.file.filename
+            }`,
+          }
+        : body;
+
+    userModel.update(id, data).then((result) => {
+      if (result.affectedRows > 0) {
+        res.status(200).send({
+          message: `User ${id} updated successfully!`,
+        });
+      } else {
+        res.status(404).send({
+          message: `Updated Failed. May be user ${id} not found!`,
+        });
+      }
+    });
   },
 };
