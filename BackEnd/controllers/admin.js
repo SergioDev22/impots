@@ -15,7 +15,6 @@ module.exports = {
           password: "required",
         },
       });
-      return false;
     }
 
     const requiredFields = ["username", "password"];
@@ -31,8 +30,6 @@ module.exports = {
             requiredFields[i],
           ]}" must be present and can not be empty or null!`,
         });
-
-        return false;
       }
     }
 
@@ -42,11 +39,10 @@ module.exports = {
         if (result.length > 0) {
           bcrypt.compare(body.password, result[0].password, (err, isMatch) => {
             if (err) {
-              res.status(500).send({
+              return res.status(500).send({
                 message: "Some error occurred while comparing password.",
                 error: err.message,
               });
-              return false;
             } else if (isMatch) {
               res.status(200).send({
                 message: "Admin logged in successfully!",

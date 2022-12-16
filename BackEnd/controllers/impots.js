@@ -18,7 +18,6 @@ module.exports = {
           annee: "required",
         },
       });
-      return false;
     }
 
     // Verification de l'existance de la photo de facture

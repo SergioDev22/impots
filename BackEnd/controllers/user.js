@@ -23,7 +23,6 @@ module.exports = {
           phone: "required",
         },
       });
-      return false;
     }
 
     const requiredFields = [
@@ -46,8 +45,6 @@ module.exports = {
             requiredFields[i],
           ]}" must be present and can not be empty or null!`,
         });
-
-        return false;
       }
     }
 
@@ -56,28 +53,25 @@ module.exports = {
       .verifExistUsername(body.username)
       .then((result) => {
         if (result.length > 0) {
-          res.status(400).send({
+          return res.status(400).send({
             message: `Username "${body.username}" already exists! please choose another one!`,
           });
-          return false;
         }
       })
       .catch((err) => {
-        res.status(500).send({
+        return res.status(500).send({
           message: "Some error occurred while checking username.",
           error: err.message,
         });
-        return false;
       });
 
     // Hasher le mot de passe avant de l'enregistrer dans la base de données
     bcrypt.hash(body.password, 10, (err, hash) => {
       if (err) {
-        res.status(500).send({
+        return res.status(500).send({
           message: "Some error occurred while hashing password.",
           error: err.message,
         });
-        return false;
       } else {
         // Remplacer le mot de passe par son hash
         body.password = hash;
@@ -141,7 +135,6 @@ module.exports = {
           password: "required",
         },
       });
-      return false;
     }
 
     const requiredFields = ["username", "password"];
@@ -157,8 +150,6 @@ module.exports = {
             requiredFields[i],
           ]}" must be present and can not be empty or null!`,
         });
-
-        return false;
       }
     }
 
@@ -168,11 +159,10 @@ module.exports = {
         if (result.length > 0) {
           bcrypt.compare(body.password, result[0].password, (err, isMatch) => {
             if (err) {
-              res.status(500).send({
+              return res.status(500).send({
                 message: "Some error occurred while comparing password.",
                 error: err.message,
               });
-              return false;
             } else if (isMatch) {
               res.status(200).send({
                 message: "User logged in successfully!",
